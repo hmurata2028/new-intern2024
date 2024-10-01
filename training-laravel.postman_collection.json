@@ -1,0 +1,33 @@
+{
+	"info": {
+		"_postman_id": "ea7384be-7539-4537-ac58-f4ffb845ad13",
+		"name": "training-laravel",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "5098670"
+	},
+	"item": [
+		{
+			"name": "GET players",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/players",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"players"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
