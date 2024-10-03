@@ -24,6 +24,14 @@ class Player extends Model
     }
 
     /**
+     * プレイヤーを1件取得
+     */
+    public function playerShow($id)
+    {
+        return (Player::query()->find($id));
+    }
+
+    /**
      * プレイヤーのレコードを更新する
      * 
      * @param int id,name,hp,mp,money

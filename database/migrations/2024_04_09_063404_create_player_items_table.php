@@ -14,12 +14,12 @@ class CreatePlayerItemsTable extends Migration
     public function up()
     {
         Schema::create('player_items', function (Blueprint $table) {
-            $table->integer('playerid')->unsigned();
-            $table->integer('itemid')->unsigned();
-            $table->integer('itemcount');
+            $table->integer('player_id')->unsigned();
+            $table->integer('item_id')->unsigned();
+            $table->integer('item_count');
             $table->timestamps();
 
-            $table->primary(['playerid','itemid']);
+            $table->primary(['player_id','item_id']);
         });
     }
 

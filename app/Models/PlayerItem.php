@@ -11,46 +11,46 @@ class PlayerItem extends Model
     /**
      * 指定したプレイヤーが、指定したアイテムを持っている個数を返す
      * 
-     * @param int playerid,itemid
+     * @param int playerId,itemId
      * @return int アイテムの個数
      */
     public function playerItemGet($playerId,$itemId){
         return(
         PlayerItem::query()->
-        where('itemid',$itemId)->
-        where('playerid',$playerId)->
+        where('item_id',$itemId)->
+        where('player_id',$playerId)->
         first());
     }
 
     /**
-     * playeritemsのレコードを追加する
+     * playerItemsのレコードを追加する
      * 
-     * @param int playerId,itemId,itemcount
+     * @param int playerId,itemId,itemCount
      */
-    public function playerItemCreate($playerId,$itemId,$itemcount)
+    public function playerItemCreate($playerId,$itemId,$itemCount)
     {
         PlayerItem::query()->
         insert([
-        'playerid'=>$playerId,
-        'itemid' => $itemId,
-        'itemcount' => $itemcount
+        'player_id'=>$playerId,
+        'item_id' => $itemId,
+        'item_count' => $itemCount
         ]);
     }
 
     /**
-     * playeritemsのレコードを更新する
+     * playerItemsのレコードを更新する
      * 
-     * @param int playerId,itemId,itemcount
+     * @param int playerId,itemId,itemCount
      */
-    public function playerItemUpdate($playerId,$itemId,$itemcount)
+    public function playerItemUpdate($playerId,$itemId,$itemCount)
     {
         PlayerItem::query()->
-        where('playerid',$playerId)->
-        where('itemid',$itemId)->
+        where('player_id',$playerId)->
+        where('item_id',$itemId)->
         update([
-        'playerid' => $playerId,
-        'itemid' => $itemId,
-        'itemcount' => $itemcount
+        'player_id' => $playerId,
+        'item_id' => $itemId,
+        'item_count' => $itemCount
         ]);
     }
 
@@ -61,13 +61,13 @@ class PlayerItem extends Model
      */
     public function playerItemDelete($playerId,$itemId){
         PlayerItem::query()->
-        where('playerid',$playerId)->
-        where('itemid',$itemId)->
+        where('player_id',$playerId)->
+        where('item_id',$itemId)->
         delete();
     }
 
     /**
-     * playeritemsに指定したレコードが存在するか返す
+     * playerItemsに指定したレコードが存在するか返す
      * 
      * @param int playerId,itemId
      * @return bool
@@ -76,8 +76,8 @@ class PlayerItem extends Model
     {
         return(
         PlayerItem::query()->
-        where('playerid',$playerId)->
-        where('itemid',$itemId)->
+        where('player_id',$playerId)->
+        where('item_id',$itemId)->
         exists());
     }
 }
