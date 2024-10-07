@@ -24,9 +24,9 @@ class PlayersController extends Controller {
      */
     public function index() {
         $player = new Player();
-        return new Response(
-            $player->playerIndex()
-        );
+        return response()->json([
+            'players' => $player->playerIndex()
+        ]);
     }
 
     /**
@@ -37,9 +37,9 @@ class PlayersController extends Controller {
      */
     public function show($id) {
         $player = new Player();
-        return new Response(
-            $player->playerShow($id)
-        );
+        return response()->json([
+            'player' => $player->playerShow($id)
+        ]);
     }
 
     /**
@@ -63,10 +63,10 @@ class PlayersController extends Controller {
 
         try {
             $player->playerUpdate($id,$request->name,$request->hp,$request->mp,$request->money);
-            return new Response(["message"=>'success']);
+            return response()->json(["message"=>'success']);
         }
         catch(QueryException $e) {
-            return new Response(["message"=>'error']);
+            return response()->json(["message"=>'error']);
         }
     }
 
@@ -80,10 +80,10 @@ class PlayersController extends Controller {
         $player = new Player();
         try {
             $player->playerDestroy($id);
-            return new Response(["message"=>'success']);
+            return response()->json(["message"=>'success']);
         }
         catch(QueryException $e) {
-            return new Response(["message"=>'error']);
+            return response()->json(["message"=>'error']);
         }
     }
 
@@ -97,10 +97,10 @@ class PlayersController extends Controller {
         try{
             $newId = $player->playerCreate($request->name,
             $request->hp, $request->mp, $request->money);
-            return new Response(["id"=>$newId]);
+            return response()->json(["id"=>$newId]);
         }
         catch(QueryException $e) {
-            return new Response(["message"=>'error']);
+            return response()->json(["message"=>'error']);
         }
     }
 
@@ -151,13 +151,13 @@ class PlayersController extends Controller {
                 $itemCount = $request->count;
             }
             //増加したアイテムのitemIdと、その結果の現在の所持数を返す
-            return new Response([
-                "itemId"=>$request->itemId, "
-                count"=>$itemCount,
-                "code"=>$response->status()]);
+            return response()->json([
+                "itemId"=>$request->itemId, 
+                "count"=>$itemCount
+            ]);
         }
         catch(Exception $e) {
-            return ["message"=>$e->getMessage(),"code"=>$response->status()];
+            return response()->json(["message"=>$e->getMessage()]);
         }
     }
     
@@ -260,15 +260,14 @@ class PlayersController extends Controller {
             $player->playerUpdate($id, $playerData["name"], $hp, $mp, $playerData["money"]);
             DB::commit();
             //アイテムの使用後の個数と、変化したプレイヤーのステータスを返す
-            return new Response([
+            return response()->json([
                 "itemId"=>$request->itemId, "count"=>$itemCount,
-                "player"=>["id"=>(int)$id,"hp"=>$hp, "mp"=>$mp],
-                "code"=>$response->status()
+                "player"=>["id"=>(int)$id, "hp"=>$hp, "mp"=>$mp],
             ]);
         }
         catch(Exception $e) {
             DB::rollback();
-            return ["message"=>$e->getMessage(),"code"=>$response->status()];
+            return response()->json(["message"=>$e->getMessage()]);
         }
         
     }
@@ -388,16 +387,14 @@ class PlayersController extends Controller {
             
             //ガチャによって排出されたアイテムと、
             //その結果更新された現在のアイテム所持数、所持金を返す
-            return new Response([
+            return response()->json([
                 "results"=>$resultData,
                 "player"=>["money"=>$money,"items"=>$playerItems],
-                "code"=>$response->status()
             ]);
         }
-        catch(Exception $e)
-        {
+        catch(Exception $e) {
             DB::rollback();
-            return ["message"=>$e->getMessage(),"code"=>$response->status()];
+            return response()->json(["message"=>$e->getMessage(), "code"=>$response->status()]);
         }  
     }
 }
