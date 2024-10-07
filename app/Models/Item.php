@@ -16,12 +16,11 @@ class Item extends Model
      * @param int itemId
      * @return int value
      */
-    public function itemGet($itemId)
-    {
+    public function itemGet($itemId) {
         return(
-        Item::query()->
-        where('id',$itemId)->
-        first());
+            Item::query()->
+            where('id',$itemId)->
+            first());
     }
 
     /**
@@ -29,9 +28,9 @@ class Item extends Model
      * 
      * @return アイテムのデータ全件
      */
-    public function itemIndex(){
-    return (
-        Item::query()->
-        get());
+    public function itemIndex() {
+        return (
+            Item::query()->
+            get());
     }
 }

@@ -15,19 +15,21 @@ class Player extends Model
      * 
      * @return 全プレイヤーのidとname
      */
-    public function playerIndex()
-    {
+    public function playerIndex() {
         return (
-        Player::query()->
-        select(['id', 'name'])->
-        get());
+            Player::query()->
+            select(['id', 'name'])->
+            get());
     }
 
     /**
      * プレイヤーを1件取得
      */
     public function playerShow($id) {
-        return (Player::query()->where('id', $id)->first());
+        return (
+            Player::query()->
+            where('id', $id)->
+            first());
     }
 
     /**
@@ -35,18 +37,17 @@ class Player extends Model
      * 
      * @param int id,name,hp,mp,money
      */
-    public function playerUpdate($id,$name,$hp,$mp,$money)
-    {
-            Player::query()->
-            where('id',$id)->
-            update(
-                [
-                    'name' => $name,
-                    'hp' => $hp,
-                    'mp' => $mp,
-                    'money' => $money
-                ]
-            );
+    public function playerUpdate($id,$name,$hp,$mp,$money) {
+        Player::query()->
+        where('id',$id)->
+        update(
+            [
+                'name' => $name,
+                'hp' => $hp,
+                'mp' => $mp,
+                'money' => $money
+            ]
+        );
     }
 
     /**
@@ -55,19 +56,18 @@ class Player extends Model
      * @param int name,hp,mp,money
      * @return 新規プレイヤーのid
      */
-    public function playerCreate($name,$hp,$mp,$money)
-    {
+    public function playerCreate($name,$hp,$mp,$money) {
        
-            return(
-                Player::query()->
-                insertGetId(
-                [
-                    'name'=>$name,
-                    'hp' => $hp,
-                    'mp' => $mp,
-                    'money' => $money
-                ]
-            ));
+        return(
+            Player::query()->
+            insertGetId(
+            [
+                'name'=>$name,
+                'hp' => $hp,
+                'mp' => $mp,
+                'money' => $money
+            ]
+        ));
     }
 
     /**
@@ -75,11 +75,10 @@ class Player extends Model
      * 
      * @param int id
      */
-    public function playerDestroy($id)
-    {
-                Player::query()->
-                where('id',$id)->
-                delete();
+    public function playerDestroy($id) {
+        Player::query()->
+        where('id',$id)->
+        delete();
     } 
 
     /**
@@ -88,12 +87,11 @@ class Player extends Model
      * @param int id
      * @return プレイヤー情報のレコード１件
      */
-    public function playerGet($id)
-    {
+    public function playerGet($id) {
         return(
-        Player::query()->
-        where('id',$id)->
-        first());
+            Player::query()->
+            where('id',$id)->
+            first());
     }
 
     /**
@@ -102,12 +100,11 @@ class Player extends Model
      * @param int id
      * @return プレイヤー情報のレコード１件
      */
-    public function txPlayerGet($id)
-    {
+    public function txPlayerGet($id) {
         return(
-        Player::query()->
-        where('id',$id)->
-        lockForUpdate()->
-        first());
+            Player::query()->
+            where('id',$id)->
+            lockForUpdate()->
+            first());
     }
 }

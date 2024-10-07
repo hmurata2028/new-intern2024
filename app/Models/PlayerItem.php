@@ -14,12 +14,12 @@ class PlayerItem extends Model
      * @param int playerId,itemId
      * @return int アイテムの個数
      */
-    public function playerItemGet($playerId,$itemId){
+    public function playerItemGet($playerId,$itemId) {
         return(
-        PlayerItem::query()->
-        where('item_id',$itemId)->
-        where('player_id',$playerId)->
-        first());
+            PlayerItem::query()->
+            where('item_id',$itemId)->
+            where('player_id',$playerId)->
+            first());
     }
 
     /**
@@ -27,13 +27,12 @@ class PlayerItem extends Model
      * 
      * @param int playerId,itemId,itemCount
      */
-    public function playerItemCreate($playerId,$itemId,$itemCount)
-    {
+    public function playerItemCreate($playerId,$itemId,$itemCount) {
         PlayerItem::query()->
         insert([
-        'player_id'=>$playerId,
-        'item_id' => $itemId,
-        'item_count' => $itemCount
+            'player_id'=>$playerId,
+            'item_id' => $itemId,
+            'item_count' => $itemCount
         ]);
     }
 
@@ -42,15 +41,14 @@ class PlayerItem extends Model
      * 
      * @param int playerId,itemId,itemCount
      */
-    public function playerItemUpdate($playerId,$itemId,$itemCount)
-    {
+    public function playerItemUpdate($playerId,$itemId,$itemCount) {
         PlayerItem::query()->
         where('player_id',$playerId)->
         where('item_id',$itemId)->
         update([
-        'player_id' => $playerId,
-        'item_id' => $itemId,
-        'item_count' => $itemCount
+            'player_id' => $playerId,
+            'item_id' => $itemId,
+            'item_count' => $itemCount
         ]);
     }
 
@@ -59,7 +57,7 @@ class PlayerItem extends Model
      * 
      * @param int playerId,itemId
      */
-    public function playerItemDelete($playerId,$itemId){
+    public function playerItemDelete($playerId,$itemId) {
         PlayerItem::query()->
         where('player_id',$playerId)->
         where('item_id',$itemId)->
@@ -72,12 +70,11 @@ class PlayerItem extends Model
      * @param int playerId,itemId
      * @return bool
      */
-    public function playerItemExists($playerId,$itemId)
-    {
+    public function playerItemExists($playerId,$itemId) {
         return(
-        PlayerItem::query()->
-        where('player_id',$playerId)->
-        where('item_id',$itemId)->
-        exists());
+            PlayerItem::query()->
+            where('player_id',$playerId)->
+            where('item_id',$itemId)->
+            exists());
     }
 }
