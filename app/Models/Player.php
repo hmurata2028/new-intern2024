@@ -37,7 +37,7 @@ class Player extends Model
      * 
      * @param int id,name,hp,mp,money
      */
-    public function playerUpdate($id,$name,$hp,$mp,$money) {
+    public function playerUpdate($id, $name, $hp, $mp, $money) {
         Player::query()->
         where('id',$id)->
         update(
@@ -56,7 +56,7 @@ class Player extends Model
      * @param int name,hp,mp,money
      * @return 新規プレイヤーのid
      */
-    public function playerCreate($name,$hp,$mp,$money) {
+    public function playerCreate($name, $hp, $mp, $money) {
        
         return(
             Player::query()->
