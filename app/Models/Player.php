@@ -27,7 +27,7 @@ class Player extends Model
      * プレイヤーを1件取得
      */
     public function playerShow($id) {
-        return (Player::query()where('id', $id)->first());
+        return (Player::query()->where('id', $id)->first());
     }
 
     /**
