@@ -17,16 +17,6 @@ class PlayersController extends Controller {
     const ITEMTYPE_HP_POTION = 1;
     const ITEMTYPE_MP_POTION = 2;
     const STATUS_MAX_VALUE = 200;
-
-    private $player;
-    private $item;
-    private $playerItem;
-
-    public function __construct(Player $player, Item $item, PlayerItem $playerItem) {
-        $this->player = $player;
-        $this->item = $item;
-        $this->playerItem = $playerItem;
-    }
     
     /**
      * Display a listing of the resource.
@@ -35,7 +25,7 @@ class PlayersController extends Controller {
      */
     public function index() {
         return response()->json([
-            'players' => $this->player->playerIndex()
+            'players' => Player::playerIndex()
         ]);
     }
 
@@ -47,7 +37,7 @@ class PlayersController extends Controller {
      */
     public function show($id) {
         return response()->json([
-            'player' => $this->player->playerShow($id)
+            'player' => Player::playerShow($id)
         ]);
     }
 
@@ -69,7 +59,7 @@ class PlayersController extends Controller {
      */
     public function update(Request $request, $id) {
         try {
-            $this->player->playerUpdate($id,$request->name,$request->hp,$request->mp,$request->money);
+            Player::playerUpdate($id,$request->name,$request->hp,$request->mp,$request->money);
             return response()->json(["message"=>'success']);
         }
         catch(QueryException $e) {
@@ -85,7 +75,7 @@ class PlayersController extends Controller {
      */
     public function destroy($id) {
         try {
-            $this->player->playerDestroy($id);
+            Player::playerDestroy($id);
             return response()->json(["message"=>'success']);
         }
         catch(QueryException $e) {
@@ -100,7 +90,7 @@ class PlayersController extends Controller {
      */
     public function create(Request $request) {
         try{
-            $newId = $this->player->playerCreate($request->name,
+            $newId = Player::playerCreate($request->name,
             $request->hp, $request->mp, $request->money);
             return response()->json(["id"=>$newId]);
         }
@@ -127,27 +117,27 @@ class PlayersController extends Controller {
     public function addItem($id, Request $request, Response $response) {
         try {
             //プレイヤーデータの存在チェック
-            $playerData = $this->player->playerGet($id);
+            $playerData = Player::playerGet($id);
             if($playerData == null) {
                 throw new Exception('no playerData');
             }
             
             //アイテムデータの存在チェック
-            $itemData = $this->item->itemGet($request->itemId);
+            $itemData = Item::itemGet($request->itemId);
             if($itemData == null) {
                 throw new Exception('no itemData');
             }
 
             //プレイヤーアイテムデータの存在チェック
             //存在していれば値を取得し、存在しなければレコードを追加する
-            $playerItemData = $this->playerItem->playerItemGet($id, $request->itemId);
+            $playerItemData = PlayerItem::playerItemGet($id, $request->itemId);
             if($playerItemData != null) {
                 $itemCount = $playerItemData->item_count;
                 $itemCount = $request->count + $itemCount;
-                $this->playerItem->playerItemUpdate($id, $request->itemId, $itemCount);
+                PlayerItem::playerItemUpdate($id, $request->itemId, $itemCount);
             } 
             else {
-                $this->playerItem->playerItemCreate($id, $request->itemId, $request->count);
+                PlayerItem::playerItemCreate($id, $request->itemId, $request->count);
                 
                 $itemCount = $request->count;
             }
@@ -172,7 +162,7 @@ class PlayersController extends Controller {
         DB::beginTransaction();
         try {
             //プレイヤーデータの存在チェック
-            $playerData = $this->player->txPlayerGet($id);
+            $playerData = Player::txPlayerGet($id);
             if($playerData == null) {
                 throw new Exception('no playerData');
             }
@@ -181,13 +171,13 @@ class PlayersController extends Controller {
             $mp = $playerData["mp"];
 
             //指定したアイテムデータのレコードの存在チェック
-            $itemData = $this->item->itemGet($request->itemId);
+            $itemData = Item::itemGet($request->itemId);
             if($itemData == null) {
                 throw new Exception('no itemData');
             }
 
             //プレイヤーアイテムデータの存在チェック
-            $playerItemData = $this->playerItem->playerItemGet($id,$request->itemId);
+            $playerItemData = PlayerItem::playerItemGet($id,$request->itemId);
             if($playerItemData == null) {
                 throw new Exception('error:400');
             }
@@ -246,14 +236,14 @@ class PlayersController extends Controller {
             //プレイヤーアイテムデータの値を更新する
             //０個になった場合はテーブルを削除する
             if($itemCount == 0) {
-                $this->playerItem->playerItemDelete($id, $request->itemId);
+                PlayerItem::playerItemDelete($id, $request->itemId);
             }
             else {
-                $this->playerItem->playerItemUpdate($id, $request->itemId, $itemCount);
+                PlayerItem::playerItemUpdate($id, $request->itemId, $itemCount);
             }
 
             //プレイヤーデータの値を更新する
-            $this->player->playerUpdate($id, $playerData["name"], $hp, $mp, $playerData["money"]);
+            Player::playerUpdate($id, $playerData["name"], $hp, $mp, $playerData["money"]);
             DB::commit();
             //アイテムの使用後の個数と、変化したプレイヤーのステータスを返す
             return response()->json([
@@ -279,7 +269,7 @@ class PlayersController extends Controller {
             DB::beginTransaction();
 
             //プレイヤーデータの存在チェック
-            $playerData = $this->player->txPlayerGet($id);
+            $playerData = Player::txPlayerGet($id);
             if($playerData == null) {
                 throw new Exception('no playerData');
             }
@@ -287,7 +277,7 @@ class PlayersController extends Controller {
             $money = $playerData["money"];
 
             //アイテムデータの存在チェック
-            $allItemData = $this->item->itemIndex();
+            $allItemData = Item::itemIndex();
             $allItemCount = count($allItemData);
             if($allItemCount == 0) {
                 throw new Exception('no itemDatas');
@@ -311,7 +301,7 @@ class PlayersController extends Controller {
             //存在チェックし、所持数と排出確立を配列に格納する
             //存在していなければプレイヤーアイテムデータのレコードを作成する
             for($i = 0; $i < $allItemCount; $i++) {
-                $playerItemData = $this->playerItem->playerItemGet($id,$i+1);
+                $playerItemData = PlayerItem::playerItemGet($id,$i+1);
 
                 if($playerItemData != null) {
                     $itemCounts[] = $playerItemData->item_count;
@@ -346,7 +336,7 @@ class PlayersController extends Controller {
 
             //プレイヤーのデータを更新する
             $money -= $price * $request->count;
-            $this->player->playerUpdate($id, $playerData["name"],
+            Player::playerUpdate($id, $playerData["name"],
             $playerData["hp"], $playerData["mp"], $money);
 
             //レスポンスに使用するJSONデータを格納する配列を宣言する
@@ -360,13 +350,13 @@ class PlayersController extends Controller {
                 if($results[$i] != 0) {
                     //プレイヤーアイテムデータが存在しない場合、
                     //レコードを作成して排出された個数を格納する
-                    $playerItemData = $this->playerItem->playerItemGet($id,$i+1);
+                    $playerItemData = PlayerItem::playerItemGet($id,$i+1);
                     if($playerItemData == null) {
-                        $this->playerItem->playerItemCreate($id, $i + 1, $results[$i]);
+                        PlayerItem::playerItemCreate($id, $i + 1, $results[$i]);
                     }
                     //存在する場合は排出後の所持数でレコードを更新する
                     else {
-                        $this->playerItem->playerItemUpdate($id, $i + 1, $itemCounts[$i]);
+                        PlayerItem::playerItemUpdate($id, $i + 1, $itemCounts[$i]);
                     }
                     $resultData[] = ["itemId"=>$i + 1,"count"=>$results[$i]];
                 }
