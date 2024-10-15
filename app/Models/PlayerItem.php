@@ -46,8 +46,6 @@ class PlayerItem extends Model
         where('player_id',$playerId)->
         where('item_id',$itemId)->
         update([
-            'player_id' => $playerId,
-            'item_id' => $itemId,
             'item_count' => $itemCount
         ]);
     }
