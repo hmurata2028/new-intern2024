@@ -28,12 +28,13 @@ class PlayerItem extends Model
      * @param int playerId,itemId,itemCount
      */
     public function playerItemCreate($playerId, $itemId, $itemCount) {
-        PlayerItem::query()->
-        insert([
-            'player_id'=>$playerId,
-            'item_id' => $itemId,
-            'item_count' => $itemCount
-        ]);
+        $success = PlayerItem::query()->
+            insert([
+                'player_id'=>$playerId,
+                'item_id' => $itemId,
+                'item_count' => $itemCount
+            ]);
+        return $success;
     }
 
     /**
@@ -42,12 +43,13 @@ class PlayerItem extends Model
      * @param int playerId,itemId,itemCount
      */
     public function playerItemUpdate($playerId, $itemId, $itemCount) {
-        PlayerItem::query()->
-        where('player_id',$playerId)->
-        where('item_id',$itemId)->
-        update([
-            'item_count' => $itemCount
-        ]);
+        $affected = PlayerItem::query()->
+            where('player_id',$playerId)->
+            where('item_id',$itemId)->
+            update([
+                'item_count' => $itemCount
+            ]);
+        return $affected;
     }
 
     /**
@@ -56,10 +58,11 @@ class PlayerItem extends Model
      * @param int playerId,itemId
      */
     public function playerItemDelete($playerId, $itemId) {
-        PlayerItem::query()->
-        where('player_id',$playerId)->
-        where('item_id',$itemId)->
-        delete();
+        $deleted =  PlayerItem::query()->
+            where('player_id',$playerId)->
+            where('item_id',$itemId)->
+            delete();
+        return $deleted;
     }
 
     /**

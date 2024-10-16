@@ -38,16 +38,17 @@ class Player extends Model
      * @param int id,name,hp,mp,money
      */
     public function playerUpdate($id, $name, $hp, $mp, $money) {
-        Player::query()->
-        where('id',$id)->
-        update(
-            [
-                'name' => $name,
-                'hp' => $hp,
-                'mp' => $mp,
-                'money' => $money
-            ]
-        );
+        $affected = Player::query()->
+            where('id',$id)->
+            update(
+                [
+                    'name' => $name,
+                    'hp' => $hp,
+                    'mp' => $mp,
+                    'money' => $money
+                ]
+            );
+        return $affected;
     }
 
     /**
@@ -76,9 +77,10 @@ class Player extends Model
      * @param int id
      */
     public function playerDestroy($id) {
-        Player::query()->
-        where('id',$id)->
-        delete();
+        $deleted = Player::query()->
+            where('id',$id)->
+            delete();
+        return $deleted;
     } 
 
     /**

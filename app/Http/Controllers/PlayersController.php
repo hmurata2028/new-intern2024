@@ -59,7 +59,10 @@ class PlayersController extends Controller {
      */
     public function update(Request $request, $id) {
         try {
-            Player::playerUpdate($id,$request->name,$request->hp,$request->mp,$request->money);
+            $affected = Player::playerUpdate($id,$request->name,$request->hp,$request->mp,$request->money);
+            if(!$affected){
+                throw new Exception('playerItem update error');
+            }
             return response()->json(["message"=>'success']);
         }
         catch(QueryException $e) {
@@ -75,7 +78,10 @@ class PlayersController extends Controller {
      */
     public function destroy($id) {
         try {
-            Player::playerDestroy($id);
+            $deleted = Player::playerDestroy($id);
+            if(!$deleted){
+                throw new Exception('playerItem delete error');
+            }
             return response()->json(["message"=>'success']);
         }
         catch(QueryException $e) {
@@ -92,6 +98,9 @@ class PlayersController extends Controller {
         try{
             $newId = Player::playerCreate($request->name,
             $request->hp, $request->mp, $request->money);
+            if(!$newId){
+                throw new Exception('player create error');
+            }
             return response()->json(["id"=>$newId]);
         }
         catch(QueryException $e) {
@@ -134,11 +143,17 @@ class PlayersController extends Controller {
             if($playerItemData != null) {
                 $itemCount = $playerItemData->item_count;
                 $itemCount = $request->count + $itemCount;
-                PlayerItem::playerItemUpdate($id, $request->itemId, $itemCount);
+                $affected = PlayerItem::playerItemUpdate($id, $request->itemId, $itemCount);
+                if(!$affected){
+                    throw new Exception('playerItem update error');
+                }
             } 
             else {
-                PlayerItem::playerItemCreate($id, $request->itemId, $request->count);
-                
+                $success = PlayerItem::playerItemCreate($id, $request->itemId, $request->count);
+                if(!$success){
+                    throw new Exception('playerItem create error');
+                }
+
                 $itemCount = $request->count;
             }
             //増加したアイテムのitemIdと、その結果の現在の所持数を返す
@@ -236,14 +251,23 @@ class PlayersController extends Controller {
             //プレイヤーアイテムデータの値を更新する
             //０個になった場合はテーブルを削除する
             if($itemCount == 0) {
-                PlayerItem::playerItemDelete($id, $request->itemId);
+                $deleted = PlayerItem::playerItemDelete($id, $request->itemId);
+                if(!$deleted){
+                    throw new Exception('playerItem delete error');
+                }
             }
             else {
-                PlayerItem::playerItemUpdate($id, $request->itemId, $itemCount);
+                $affected = PlayerItem::playerItemUpdate($id, $request->itemId, $itemCount);
+                if(!$affected){
+                    throw new Exception('playerItem update error');
+                }
             }
 
             //プレイヤーデータの値を更新する
-            Player::playerUpdate($id, $playerData["name"], $hp, $mp, $playerData["money"]);
+            $affected = Player::playerUpdate(50, $playerData["name"], $hp, $mp, $playerData["money"]);
+            if(!$affected){
+                throw new Exception('player update error');
+            }
             DB::commit();
             //アイテムの使用後の個数と、変化したプレイヤーのステータスを返す
             return response()->json([
@@ -352,11 +376,17 @@ class PlayersController extends Controller {
                     //レコードを作成して排出された個数を格納する
                     $playerItemData = PlayerItem::playerItemGet($id,$i+1);
                     if($playerItemData == null) {
-                        PlayerItem::playerItemCreate($id, $i + 1, $results[$i]);
+                        $success = PlayerItem::playerItemCreate($id, $i + 1, $results[$i]);
+                        if(!$success){
+                            throw new Exception('playerItem create error');
+                        }
                     }
                     //存在する場合は排出後の所持数でレコードを更新する
                     else {
-                        PlayerItem::playerItemUpdate($id, $i + 1, $itemCounts[$i]);
+                        $affected = PlayerItem::playerItemUpdate($id, $i + 1, $itemCounts[$i]);
+                        if(!$affected){
+                            throw new Exception('playerItem update error');
+                        }
                     }
                     $resultData[] = ["itemId"=>$i + 1,"count"=>$results[$i]];
                 }
